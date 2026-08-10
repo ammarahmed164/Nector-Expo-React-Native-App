@@ -1,0 +1,40 @@
+{
+  "expo": {
+    "name": "Nectar",
+    "slug": "nectar-grocery-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "nectar",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/splash-logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#53B175"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.nectar"
+    },
+    "android": {
+      "package": "com.yourcompany.nectar",
+      "adaptiveIcon": {
+        "backgroundColor": "#53B175"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-asset",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Nectar to access your photos to set a profile picture."
+        }
+      ]
+    ]
+  }
+}

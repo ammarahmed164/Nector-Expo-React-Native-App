@@ -1,0 +1,17 @@
+# Supabase local config — use with: npx supabase login && node scripts/setup-supabase-bird.mjs
+project_id = "itongowuivcufubjqkyd"
+
+[auth]
+enable_signup = true
+
+[auth.sms]
+enable_signup = true
+enable_confirmations = true
+
+[auth.hook.send_sms]
+enabled = true
+uri = "https://itongowuivcufubjqkyd.supabase.co/functions/v1/send-sms"
+secrets = "env(SEND_SMS_HOOK_SECRET)"
+
+[functions.send-sms]
+verify_jwt = false

@@ -1,0 +1,65 @@
+{
+  "users": [
+    {
+      "id": "908daef6-4a7b-4944-971f-07d89b1f0e53",
+      "name": "ammarahmeddd164",
+      "email": "ammarahmeddd164@gmail.com",
+      "createdAt": "2026-08-10T06:06:35.657Z",
+      "updatedAt": "2026-08-10T06:59:11.768Z",
+      "orderCount": 2,
+      "phone": "3193895181"
+    }
+  ],
+  "orders": [
+    {
+      "id": "ORD-151761",
+      "userId": "908daef6-4a7b-4944-971f-07d89b1f0e53",
+      "userName": "ammarahmeddd164",
+      "userEmail": "ammarahmeddd164@gmail.com",
+      "items": [
+        {
+          "productId": "4",
+          "name": "Egg Chicken Red",
+          "qty": 1,
+          "price": 4.99,
+          "unit": "4pcs, Price"
+        },
+        {
+          "productId": "1",
+          "name": "Organic Bananas",
+          "qty": 2,
+          "price": 4.99,
+          "unit": "7pcs, Priceg"
+        }
+      ],
+      "total": 16.97,
+      "deliveryMethod": "Standard Delivery",
+      "paymentLabel": "Card",
+      "promoLabel": "Pick discount",
+      "status": "delivered",
+      "createdAt": "2026-08-10T06:59:11.768Z"
+    },
+    {
+      "id": "ORD-076360",
+      "userId": "908daef6-4a7b-4944-971f-07d89b1f0e53",
+      "userName": "ammarahmeddd164",
+      "userEmail": "ammarahmeddd164@gmail.com",
+      "userPhone": "",
+      "items": [
+        {
+          "productId": "2",
+          "name": "Red Apple",
+          "qty": 1,
+          "price": 4.99,
+          "unit": "1kg, Priceg"
+        }
+      ],
+      "total": 6.4910000000000005,
+      "deliveryMethod": "Standard Delivery",
+      "paymentLabel": "Card",
+      "promoLabel": "10% OFF",
+      "status": "delivered",
+      "createdAt": "2026-08-10T06:07:56.367Z"
+    }
+  ]
+}
