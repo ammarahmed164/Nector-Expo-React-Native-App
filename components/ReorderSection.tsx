@@ -55,7 +55,7 @@ export default function ReorderSection() {
 
   if (items.length === 0) {
     return (
-      <View className="mb-6 bg-bg rounded-2xl p-5 border border-line">
+      <View className="mb-6 bg-white rounded-3xl p-5 border border-line">
         <View className="flex-row items-center mb-2">
           <Ionicons name="refresh-circle-outline" size={22} color={Colors.primary} />
           <Text className="text-dark font-semibold text-lg ml-2">Smart Reorder</Text>
@@ -78,7 +78,7 @@ export default function ReorderSection() {
         </View>
         <Pressable
           onPress={() => addManyToCart(items)}
-          className="bg-primary/10 px-3 py-2 rounded-full"
+          className="bg-primarySoft px-3 py-2 rounded-full"
         >
           <Text className="text-primary text-sm font-semibold">Add All</Text>
         </Pressable>
@@ -93,7 +93,7 @@ export default function ReorderSection() {
         renderItem={({ item }) => (
           <Pressable
             onPress={() => router.push(`/product/${item.id}`)}
-            className="w-40 bg-white border border-line rounded-2xl p-3"
+            className="w-40 bg-white border border-line rounded-3xl p-3"
           >
             <Image source={{ uri: item.image }} className="w-full h-24 rounded-xl mb-2" resizeMode="contain" />
             <Text className="text-dark font-medium text-sm" numberOfLines={2}>
@@ -105,7 +105,7 @@ export default function ReorderSection() {
             )}
             <Pressable
               onPress={() => addToCart(item, 1)}
-              className="mt-2 flex-row items-center justify-center bg-primary rounded-full py-2"
+              className="mt-2 flex-row items-center justify-center bg-primary rounded-xl py-2.5"
             >
               <Ionicons name="cart-outline" size={14} color="#fff" />
               <Text className="text-white text-xs font-semibold ml-1">Reorder</Text>

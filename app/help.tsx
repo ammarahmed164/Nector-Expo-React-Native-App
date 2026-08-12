@@ -42,7 +42,7 @@ const FAQ = [
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <Pressable onPress={() => setOpen(!open)} className="border border-line rounded-2xl p-4 mb-3">
+    <Pressable onPress={() => setOpen(!open)} className="bg-white border border-line rounded-2xl p-4 mb-3">
       <View className="flex-row items-center justify-between">
         <Text className="flex-1 text-dark font-semibold text-base pr-3">{q}</Text>
         <Ionicons name={open ? "chevron-up" : "chevron-down"} size={18} color={Colors.muted} />
@@ -54,10 +54,10 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 
 export default function Help() {
   return (
-    <View className="flex-1 bg-white pt-14">
-      <Header title="Help" />
+    <View className="flex-1 bg-canvas pt-14">
+      <Header title="Help centre" subtitle="We’re here for you" />
       <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
-        <View className="bg-primary/10 rounded-2xl p-5 mb-6">
+        <View className="bg-primarySoft border border-primary/10 rounded-3xl p-5 mb-6">
           <Text className="text-dark text-lg font-semibold mb-2">Need assistance?</Text>
           <Text className="text-muted leading-6 mb-3">
             Our Nectar support team is available 9 AM – 10 PM (PKT), seven days a week.

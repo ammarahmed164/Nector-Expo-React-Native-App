@@ -17,6 +17,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { apiPost } from "@/lib/api";
 import { isValidEmail, isValidPassword } from "@/lib/authValidation";
 import { syncUserToBackend } from "@/lib/syncUser";
+import { saveStoredProfile } from "@/lib/profileAvatarStorage";
 import { Colors } from "@/constants/colors";
 
 type SignupResponse = {
@@ -75,7 +76,8 @@ export default function Signup() {
         email: data.user.email ?? email.trim().toLowerCase(),
       };
       setUser(profile);
-      syncUserToBackend(profile);
+      await saveStoredProfile(profile);
+      void syncUserToBackend(profile);
       router.push("/(auth)/phone-number");
     } catch (err: any) {
       const msg = err.message ?? "Signup failed";
@@ -91,7 +93,7 @@ export default function Signup() {
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-white"
+      className="flex-1 bg-canvas"
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <ScrollView
@@ -99,13 +101,15 @@ export default function Signup() {
         contentContainerClassName="px-6 pt-16 pb-10"
         keyboardShouldPersistTaps="handled"
       >
-        <Pressable onPress={() => router.back()} className="mb-4 w-10" disabled={loading}>
+        <Pressable onPress={() => router.back()} className="mb-4 w-10 h-10 rounded-2xl bg-white border border-line items-center justify-center" disabled={loading}>
           <Ionicons name="chevron-back" size={24} color={Colors.dark} />
         </Pressable>
 
-        <CarrotLogo size={48} />
-        <Text className="text-2xl font-bold text-dark mb-1 mt-6 text-center">Sign Up</Text>
-        <Text className="text-muted mb-8 text-center">Enter your credentials to continue</Text>
+        <View className="w-20 h-20 rounded-3xl bg-white border border-line items-center justify-center self-center">
+          <CarrotLogo size={42} />
+        </View>
+        <Text className="text-3xl font-bold text-dark mb-1 mt-6 text-center">Create account</Text>
+        <Text className="text-muted mb-8 text-center">Join Nectar for a smoother grocery experience</Text>
 
         {loading && (
           <View className="bg-primary/10 border border-primary/20 rounded-xl px-4 py-3 mb-4 flex-row items-center">
@@ -114,7 +118,7 @@ export default function Signup() {
           </View>
         )}
 
-        <Text className="text-muted mb-1">Username</Text>
+        <Text className="text-dark font-medium mb-2 text-sm">Full name</Text>
         <TextInput
           value={username}
           onChangeText={(v) => {
@@ -125,10 +129,10 @@ export default function Signup() {
           returnKeyType="next"
           editable={!loading}
           onSubmitEditing={() => emailRef.current?.focus()}
-          className="border-b border-line pb-2 mb-6 text-dark text-base"
+          className="bg-white border border-line rounded-2xl px-4 h-14 mb-5 text-dark text-base"
         />
 
-        <Text className="text-muted mb-1">Email</Text>
+        <Text className="text-dark font-medium mb-2 text-sm">Email address</Text>
         <TextInput
           ref={emailRef}
           value={email}
@@ -142,11 +146,11 @@ export default function Signup() {
           returnKeyType="next"
           editable={!loading}
           onSubmitEditing={() => passwordRef.current?.focus()}
-          className="border-b border-line pb-2 mb-6 text-dark text-base"
+          className="bg-white border border-line rounded-2xl px-4 h-14 mb-5 text-dark text-base"
         />
 
-        <Text className="text-muted mb-1">Password</Text>
-        <View className="flex-row items-center border-b border-line mb-2">
+        <Text className="text-dark font-medium mb-2 text-sm">Password</Text>
+        <View className="flex-row items-center bg-white border border-line rounded-2xl px-4 h-14 mb-2">
           <TextInput
             ref={passwordRef}
             value={password}
@@ -159,7 +163,7 @@ export default function Signup() {
             returnKeyType="go"
             editable={!loading}
             onSubmitEditing={submitIfReady}
-            className="flex-1 pb-2 text-dark text-base"
+            className="flex-1 text-dark text-base"
             {...(Platform.OS === "web"
               ? ({
                   onKeyDown: (e: any) => {
@@ -179,7 +183,7 @@ export default function Signup() {
         {!!error && <Text className="text-red-500 text-sm mt-2 mb-4">{error}</Text>}
 
         <View className="mt-6">
-          <Button title="Sign Up" loading={loading} disabled={!canSubmit || loading} onPress={handleSignup} />
+          <Button title="Create account" icon="person-add-outline" loading={loading} disabled={!canSubmit || loading} onPress={handleSignup} />
         </View>
 
         <View className="flex-row justify-center mt-6">

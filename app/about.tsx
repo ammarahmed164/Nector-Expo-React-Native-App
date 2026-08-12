@@ -3,11 +3,11 @@ import Header from "@/components/Header";
 
 export default function About() {
   return (
-    <View className="flex-1 bg-white pt-14">
-      <Header title="About" />
+    <View className="flex-1 bg-canvas pt-14">
+      <Header title="About Nectar" subtitle="Freshness, made simple" />
       <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
-        <View className="items-center mb-6">
-          <View className="w-20 h-20 rounded-full bg-primary items-center justify-center mb-3">
+        <View className="items-center bg-white border border-line rounded-3xl py-7 mb-6">
+          <View className="w-20 h-20 rounded-3xl bg-primary items-center justify-center mb-3">
             <Text className="text-white text-3xl font-bold">n</Text>
           </View>
           <Text className="text-2xl font-bold text-dark">Nectar</Text>

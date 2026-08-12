@@ -26,7 +26,7 @@ export default function ConfirmDialog({
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onCancel}>
       <Pressable className="flex-1 bg-black/45 items-center justify-center px-6" onPress={onCancel}>
-        <Pressable className="w-full max-w-sm bg-white rounded-3xl p-6" onPress={(e) => e.stopPropagation()}>
+        <Pressable className="w-full max-w-sm bg-white rounded-[32px] p-6 border border-line" onPress={(e) => e.stopPropagation()}>
           <Text className="text-xl font-semibold text-dark text-center">{title}</Text>
           <Text className="text-muted text-center mt-3 leading-6">{message}</Text>
 
@@ -34,7 +34,7 @@ export default function ConfirmDialog({
             <Pressable
               onPress={onCancel}
               disabled={loading}
-              className="flex-1 h-12 rounded-2xl border border-line items-center justify-center"
+              className="flex-1 h-12 rounded-2xl border border-line bg-canvas items-center justify-center"
             >
               <Text className="text-dark font-medium">{cancelLabel}</Text>
             </Pressable>
@@ -42,7 +42,7 @@ export default function ConfirmDialog({
               onPress={onConfirm}
               disabled={loading}
               className={`flex-1 h-12 rounded-2xl items-center justify-center ${
-                destructive ? "bg-red-500" : "bg-primary"
+                destructive ? "bg-danger" : "bg-primary"
               }`}
             >
               {loading ? (

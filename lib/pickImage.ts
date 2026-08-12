@@ -1,4 +1,5 @@
 import * as ImagePicker from "expo-image-picker";
+import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import { Alert, Platform } from "react-native";
 
 export async function pickProfileImage(): Promise<string | null> {
@@ -14,17 +15,27 @@ export async function pickProfileImage(): Promise<string | null> {
     mediaTypes: ImagePicker.MediaTypeOptions.Images,
     allowsEditing: true,
     aspect: [1, 1],
-    quality: 0.75,
-    base64: true,
+    quality: 0.7,
   });
 
   if (result.canceled || !result.assets[0]?.uri) return null;
 
-  const asset = result.assets[0];
-  if (asset.base64) {
-    const mime = asset.mimeType ?? "image/jpeg";
-    return `data:${mime};base64,${asset.base64}`;
+  try {
+    const context = ImageManipulator.manipulate(result.assets[0].uri);
+    context.resize({ width: 512, height: 512 });
+    const rendered = await context.renderAsync();
+    const optimized = await rendered.saveAsync({
+      base64: true,
+      compress: 0.72,
+      format: SaveFormat.JPEG,
+    });
+
+    if (optimized.base64) {
+      return `data:image/jpeg;base64,${optimized.base64}`;
+    }
+  } catch {
+    Alert.alert("Photo could not be saved", "Please choose another image and try again.");
   }
 
-  return asset.uri;
+  return null;
 }

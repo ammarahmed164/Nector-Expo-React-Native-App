@@ -24,34 +24,44 @@ export default function Location() {
   };
 
   return (
-    <View className="flex-1 bg-white pt-14 px-5">
-      <Header title="Select Your Location" />
+    <View className="flex-1 bg-canvas pt-14 px-5">
+      <Header title="Delivery address" subtitle="Set where we should deliver" />
 
-      <Text className="text-muted text-center leading-6 my-6">
-        Update your delivery zone and area for accurate store availability.
-      </Text>
+      <View className="bg-primarySoft border border-primary/10 rounded-3xl p-4 my-5 flex-row items-center">
+        <View className="w-11 h-11 rounded-2xl bg-white items-center justify-center mr-3">
+          <Ionicons name="location" size={22} color={Colors.primary} />
+        </View>
+        <Text className="text-muted leading-5 flex-1 text-sm">Choose your zone and area for accurate availability and delivery times.</Text>
+      </View>
 
-      <Pressable onPress={() => setPicker("zone")} className="mb-6">
-        <Text className="text-muted mb-1">Your Zone</Text>
-        <View className="flex-row items-center justify-between border-b border-line pb-3">
-          <Text className="text-dark text-lg">{selectedZone}</Text>
-          <Ionicons name="chevron-down" size={18} color={Colors.muted} />
+      <Pressable onPress={() => setPicker("zone")} className="mb-4">
+        <Text className="text-dark font-medium mb-2 text-sm">Your zone</Text>
+        <View className="flex-row items-center justify-between bg-white border border-line rounded-2xl px-4 h-14">
+          <Text className="text-dark text-base">{selectedZone}</Text>
+          <Ionicons name="chevron-down" size={18} color={Colors.primary} />
         </View>
       </Pressable>
 
       <Pressable onPress={() => setPicker("area")} className="mb-8">
-        <Text className="text-muted mb-1">Your Area</Text>
-        <View className="flex-row items-center justify-between border-b border-line pb-3">
-          <Text className="text-dark text-lg">{selectedArea || "Types of your area"}</Text>
-          <Ionicons name="chevron-down" size={18} color={Colors.muted} />
+        <Text className="text-dark font-medium mb-2 text-sm">Your area</Text>
+        <View className="flex-row items-center justify-between bg-white border border-line rounded-2xl px-4 h-14">
+          <Text className={`text-base ${selectedArea ? "text-dark" : "text-muted"}`}>{selectedArea || "Choose your area"}</Text>
+          <Ionicons name="chevron-down" size={18} color={Colors.primary} />
         </View>
       </Pressable>
 
-      <Button title="Submit" onPress={confirm} disabled={!selectedArea} />
+      <Button title="Save delivery address" icon="checkmark-circle-outline" onPress={confirm} disabled={!selectedArea} />
 
       <Modal visible={picker !== null} transparent animationType="slide">
         <Pressable className="flex-1 bg-black/40 justify-end" onPress={() => setPicker(null)}>
-          <Pressable className="bg-white rounded-t-3xl max-h-[60%]" onPress={(e) => e.stopPropagation()}>
+          <Pressable className="bg-white rounded-t-[32px] max-h-[65%]" onPress={(e) => e.stopPropagation()}>
+            <View className="w-11 h-1 rounded-full bg-lineStrong self-center mt-3" />
+            <View className="flex-row items-center justify-between px-5 py-4 border-b border-line">
+              <Text className="text-dark text-lg font-semibold">Select {picker === "zone" ? "zone" : "area"}</Text>
+              <Pressable onPress={() => setPicker(null)} className="w-8 h-8 rounded-xl bg-canvas items-center justify-center">
+                <Ionicons name="close" size={18} color={Colors.dark} />
+              </Pressable>
+            </View>
             <FlatList
               data={picker === "zone" ? locationZones.map((z) => z.name) : areas}
               keyExtractor={(item) => item}
@@ -66,9 +76,10 @@ export default function Location() {
                     }
                     setPicker(null);
                   }}
-                  className="px-5 py-4 border-b border-line"
+                  className="px-5 py-4 border-b border-line flex-row items-center justify-between"
                 >
                   <Text className="text-dark text-base">{item}</Text>
+                  {(item === selectedZone || item === selectedArea) && <Ionicons name="checkmark-circle" size={19} color={Colors.primary} />}
                 </Pressable>
               )}
             />

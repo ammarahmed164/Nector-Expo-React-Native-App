@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { View, Text, TextInput, Pressable, Alert, ActivityIndicator } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import AuthScreenLayout, { CircularNextButton } from "@/components/AuthScreenLayout";
 import { apiPost } from "@/lib/api";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useLocationStore } from "@/store/useLocationStore";
 import { APP_COUNTRY, formatPakistanMobileMasked } from "@/constants/country";
 import { Colors } from "@/constants/colors";
+import { syncUserToBackend } from "@/lib/syncUser";
 
 type OtpProvider = "supabase" | "bird" | "twilio" | "dev";
 
@@ -81,8 +83,15 @@ export default function Verification() {
       await apiPost("/auth/verify-otp", { dial, phone, code, provider: otpProvider });
 
       const fullPhone = `${dial}${phone}`;
-      if (user) updateUser({ phone: fullPhone });
-      else setUser({ id: Date.now().toString(), name: "Guest User", email: "guest@example.com", phone: fullPhone });
+      if (user) {
+        const updatedUser = { ...user, phone: fullPhone };
+        updateUser({ phone: fullPhone });
+        void syncUserToBackend(updatedUser);
+      } else {
+        const guestUser = { id: Date.now().toString(), name: "Guest User", email: "guest@example.com", phone: fullPhone };
+        setUser(guestUser);
+        void syncUserToBackend(guestUser);
+      }
 
       setPhoneVerified(true);
       router.replace("/(auth)/select-location");
@@ -97,7 +106,10 @@ export default function Verification() {
 
   return (
     <AuthScreenLayout>
-      <Text className="text-2xl font-semibold text-dark mb-2">{title}</Text>
+      <View className="w-14 h-14 rounded-2xl bg-primarySoft items-center justify-center mb-5">
+        <Ionicons name="shield-checkmark-outline" size={27} color={Colors.primary} />
+      </View>
+      <Text className="text-3xl font-bold text-dark mb-2">{title}</Text>
       <Text className="text-muted mb-6 text-base">
         {otpProvider === "dev"
           ? "Development mode — enter the 4-digit code shown below."
@@ -114,9 +126,9 @@ export default function Verification() {
         </View>
       )}
 
-      <Text className="text-muted mb-2 text-base">Code</Text>
-      <Pressable onPress={() => inputRef.current?.focus()} className="border-b border-line pb-3 mb-2">
-        <Text className="text-dark text-2xl tracking-[8px]">{displayCode}</Text>
+      <Text className="text-dark font-medium mb-2 text-sm">Verification code</Text>
+      <Pressable onPress={() => inputRef.current?.focus()} className="bg-white border border-line rounded-2xl px-5 h-16 justify-center mb-2">
+        <Text className="text-dark text-2xl tracking-[8px] font-semibold">{displayCode}</Text>
       </Pressable>
       <TextInput
         ref={inputRef}

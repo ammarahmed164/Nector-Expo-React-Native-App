@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View, Text, TextInput, Alert, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import AuthScreenLayout, { CircularNextButton } from "@/components/AuthScreenLayout";
 import { apiPost } from "@/lib/api";
 import {
@@ -68,13 +69,16 @@ export default function PhoneNumber() {
 
   return (
     <AuthScreenLayout>
-      <Text className="text-2xl font-semibold text-dark mb-2">Enter your mobile number</Text>
+      <View className="w-14 h-14 rounded-2xl bg-primarySoft items-center justify-center mb-5">
+        <Ionicons name="phone-portrait-outline" size={26} color={Colors.primary} />
+      </View>
+      <Text className="text-3xl font-bold text-dark mb-2">Your mobile number</Text>
       <Text className="text-muted mb-8 text-base">
         We will send a verification code to your Pakistan mobile number.
       </Text>
 
-      <Text className="text-muted mb-2 text-base">Mobile Number</Text>
-      <View className="flex-row items-center border-b border-line pb-3 mb-2">
+      <Text className="text-dark font-medium mb-2 text-sm">Mobile number</Text>
+      <View className="flex-row items-center bg-white border border-line rounded-2xl px-4 h-16 mb-2">
         <Text className="text-xl mr-2">{APP_COUNTRY.flag}</Text>
         <Text className="text-dark text-lg mr-3">{APP_COUNTRY.dial}</Text>
         <TextInput

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { supabase } from "../lib/supabase";
-import { createAdminToken, getAdminCredentials } from "../lib/adminStore";
+import { createAdminToken, getAdminCredentials, listUsers } from "../lib/adminStore";
 import { createOtp, verifyOtp } from "../lib/otpStore";
 import { toE164, getPhoneProvider, setPhoneProvider } from "../lib/phoneAuth";
 import { parsePakistanMobile } from "../lib/pakistanPhone";
@@ -134,7 +134,35 @@ authRouter.post("/login", async (req, res) => {
 
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) return res.status(401).json({ error: "Invalid credentials" });
-    res.json({ role: "user", ...data });
+
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("id, name, email, phone")
+      .eq("id", data.user.id)
+      .maybeSingle();
+
+    if (profileError) {
+      console.warn("Could not load profile during login:", profileError.message);
+    }
+
+    // Older app versions stored phone details in the local admin store only.
+    // Use that as a one-time migration source so existing users do not lose data.
+    const legacyProfile = listUsers().find((item) => item.id === data.user.id || item.email === email);
+    const resolvedProfile = {
+      id: data.user.id,
+      name: profile?.name ?? legacyProfile?.name ?? data.user.user_metadata?.name,
+      email: profile?.email ?? legacyProfile?.email ?? data.user.email ?? email,
+      phone: profile?.phone ?? legacyProfile?.phone,
+    };
+
+    if (!profile?.phone && legacyProfile?.phone) {
+      const { error: migrationError } = await supabase
+        .from("profiles")
+        .upsert(resolvedProfile, { onConflict: "id" });
+      if (migrationError) console.warn("Could not migrate legacy profile:", migrationError.message);
+    }
+
+    res.json({ role: "user", ...data, profile: resolvedProfile });
   } catch (err: any) {
     res.status(500).json({ error: err.message ?? "Login failed" });
   }
@@ -160,7 +188,7 @@ authRouter.post("/send-otp", async (req, res) => {
       codeLength: result.codeLength,
       expiresInSec: result.expiresInSec,
       ...(result.devCode ? { code: result.devCode } : {}),
-      ...(result.setupHint ? { setupHint: result.setupHint } : {}),
+      ...("setupHint" in result && result.setupHint ? { setupHint: result.setupHint } : {}),
     });
   } catch (err: any) {
     res.status(500).json({ error: err.message ?? "Failed to send code" });

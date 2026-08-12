@@ -17,7 +17,7 @@ export default function AuthScreenLayout({ children, showBack = true, onBack }: 
   return (
     <View className="flex-1 bg-white">
       <LinearGradient
-        colors={["#FEF6FF", "#FFFFFF", "#F3FFF8"]}
+        colors={["#F7FBF8", "#FFFFFF", "#EAF7EF"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFill}
@@ -25,7 +25,7 @@ export default function AuthScreenLayout({ children, showBack = true, onBack }: 
       {showBack && (
         <Pressable
           onPress={onBack ?? (() => router.back())}
-          className="absolute top-14 left-5 z-10 w-10 h-10 items-center justify-center"
+          className="absolute top-14 left-5 z-10 w-10 h-10 rounded-2xl bg-white border border-line items-center justify-center"
         >
           <Ionicons name="chevron-back" size={24} color={Colors.dark} />
         </Pressable>
@@ -40,9 +40,9 @@ export function CircularNextButton({ onPress, disabled }: { onPress: () => void;
     <Pressable
       onPress={onPress}
       disabled={disabled}
-      className={`w-[78px] h-[78px] rounded-full bg-primary items-center justify-center self-end ${disabled ? "opacity-40" : ""}`}
+      className={`w-16 h-16 rounded-3xl bg-primary items-center justify-center self-end ${disabled ? "opacity-40" : ""}`}
     >
-      <Ionicons name="chevron-forward" size={28} color="#fff" />
+      <Ionicons name="arrow-forward" size={25} color="#fff" />
     </Pressable>
   );
 }

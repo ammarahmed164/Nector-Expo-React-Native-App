@@ -39,30 +39,30 @@ export default function SelectLocation() {
         />
       </View>
 
-      <Text className="text-2xl font-semibold text-dark text-center mb-3">Select Your Location</Text>
+      <Text className="text-3xl font-bold text-dark text-center mb-3">Select your location</Text>
       <Text className="text-muted text-center leading-6 mb-8 px-2">
-        Swithch on your location to stay in tune with what&apos;s happening in your area
+        Choose your area to see accurate availability and delivery times.
       </Text>
 
       <Pressable onPress={() => setPicker("zone")} className="mb-6">
-        <Text className="text-muted mb-1">Your Zone</Text>
-        <View className="flex-row items-center justify-between border-b border-line pb-3">
-          <Text className="text-dark text-lg">{selectedZone}</Text>
-          <Ionicons name="chevron-down" size={18} color={Colors.muted} />
+        <Text className="text-dark font-medium mb-2 text-sm">Your zone</Text>
+        <View className="flex-row items-center justify-between bg-white border border-line rounded-2xl px-4 h-14">
+          <Text className="text-dark text-base">{selectedZone}</Text>
+          <Ionicons name="chevron-down" size={18} color={Colors.primary} />
         </View>
       </Pressable>
 
       <Pressable onPress={() => setPicker("area")} className="mb-10">
-        <Text className="text-muted mb-1">Your Area</Text>
-        <View className="flex-row items-center justify-between border-b border-line pb-3">
-          <Text className={`text-lg ${selectedArea ? "text-dark" : "text-muted"}`}>
-            {selectedArea || "Types of your area"}
+        <Text className="text-dark font-medium mb-2 text-sm">Your area</Text>
+        <View className="flex-row items-center justify-between bg-white border border-line rounded-2xl px-4 h-14">
+          <Text className={`text-base ${selectedArea ? "text-dark" : "text-muted"}`}>
+            {selectedArea || "Choose your area"}
           </Text>
-          <Ionicons name="chevron-down" size={18} color={Colors.muted} />
+          <Ionicons name="chevron-down" size={18} color={Colors.primary} />
         </View>
       </Pressable>
 
-      <Button title="Submit" onPress={submit} disabled={!selectedArea} />
+      <Button title="Start shopping" icon="arrow-forward" onPress={submit} disabled={!selectedArea} />
 
       <Modal visible={picker !== null} transparent animationType="slide">
         <Pressable className="flex-1 bg-black/40 justify-end" onPress={() => setPicker(null)}>

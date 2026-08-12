@@ -18,7 +18,7 @@ import { useAdminStore } from "@/store/useAdminStore";
 import { apiPost } from "@/lib/api";
 import { isValidEmail, isValidPassword } from "@/lib/authValidation";
 import { syncUserToBackend } from "@/lib/syncUser";
-import { attachStoredAvatar } from "@/lib/profileAvatarStorage";
+import { attachStoredProfile } from "@/lib/profileAvatarStorage";
 import { Colors } from "@/constants/colors";
 
 type LoginResponse =
@@ -30,6 +30,7 @@ type LoginResponse =
   | {
       role?: "user";
       user?: { id: string; email?: string; user_metadata?: { name?: string } };
+      profile?: { id: string; name?: string; email?: string; phone?: string } | null;
       error?: string;
     };
 
@@ -77,13 +78,15 @@ export default function Login() {
         return;
       }
 
-      const profile = await attachStoredAvatar({
+      const serverProfile = "profile" in data ? data.profile : undefined;
+      const profile = await attachStoredProfile({
         id: user.id,
-        name: user.user_metadata?.name ?? email.split("@")[0],
-        email: user.email ?? email.trim().toLowerCase(),
+        name: serverProfile?.name ?? user.user_metadata?.name ?? email.split("@")[0],
+        email: serverProfile?.email ?? user.email ?? email.trim().toLowerCase(),
+        phone: serverProfile?.phone,
       });
       setUser(profile);
-      syncUserToBackend(profile);
+      void syncUserToBackend(profile);
       router.replace("/(tabs)");
     } catch (err: any) {
       setError(err.message?.toLowerCase().includes("invalid") ? "Invalid credentials" : err.message ?? "Invalid credentials");
@@ -98,7 +101,7 @@ export default function Login() {
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-white"
+      className="flex-1 bg-canvas"
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <ScrollView
@@ -106,9 +109,11 @@ export default function Login() {
         contentContainerClassName="px-6 pt-16 pb-10"
         keyboardShouldPersistTaps="handled"
       >
-        <CarrotLogo size={48} />
-        <Text className="text-2xl font-bold text-dark mb-1 mt-8 text-center">Loging</Text>
-        <Text className="text-muted mb-8 text-center">Enter your emails and password</Text>
+        <View className="w-20 h-20 rounded-3xl bg-white border border-line items-center justify-center self-center">
+          <CarrotLogo size={42} />
+        </View>
+        <Text className="text-3xl font-bold text-dark mb-1 mt-7 text-center">Welcome back</Text>
+        <Text className="text-muted mb-8 text-center">Sign in to continue your fresh shopping</Text>
 
         {loading && (
           <View className="bg-primary/10 border border-primary/20 rounded-xl px-4 py-3 mb-4 flex-row items-center">
@@ -117,7 +122,7 @@ export default function Login() {
           </View>
         )}
 
-        <Text className="text-muted mb-1">Email</Text>
+        <Text className="text-dark font-medium mb-2 text-sm">Email address</Text>
         <TextInput
           value={email}
           onChangeText={(v) => {
@@ -130,11 +135,11 @@ export default function Login() {
           returnKeyType="next"
           editable={!loading}
           onSubmitEditing={() => passwordRef.current?.focus()}
-          className="border-b border-line pb-2 mb-6 text-dark text-base"
+          className="bg-white border border-line rounded-2xl px-4 h-14 mb-5 text-dark text-base"
         />
 
-        <Text className="text-muted mb-1">Password</Text>
-        <View className="flex-row items-center border-b border-line mb-2">
+        <Text className="text-dark font-medium mb-2 text-sm">Password</Text>
+        <View className="flex-row items-center bg-white border border-line rounded-2xl px-4 h-14 mb-2">
           <TextInput
             ref={passwordRef}
             value={password}
@@ -147,7 +152,7 @@ export default function Login() {
             returnKeyType="go"
             editable={!loading}
             onSubmitEditing={submitIfReady}
-            className="flex-1 pb-2 text-dark text-base"
+            className="flex-1 text-dark text-base"
             {...(Platform.OS === "web"
               ? ({
                   onKeyDown: (e: any) => {
@@ -172,12 +177,12 @@ export default function Login() {
           </Pressable>
         </Link>
 
-        <Button title="Log In" loading={loading} disabled={!canSubmit || loading} onPress={handleLogin} />
+        <Button title="Log in" icon="log-in-outline" loading={loading} disabled={!canSubmit || loading} onPress={handleLogin} />
 
         <View className="flex-row justify-center mt-6">
           <Text className="text-muted">Don&apos;t have an account? </Text>
           <Link href="/(auth)/signup">
-            <Text className="text-primary font-medium">Singup</Text>
+            <Text className="text-primary font-semibold">Sign up</Text>
           </Link>
         </View>
       </ScrollView>

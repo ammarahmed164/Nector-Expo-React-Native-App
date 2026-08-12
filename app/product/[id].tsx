@@ -145,7 +145,7 @@ export default function ProductDetails() {
                 className="flex-row justify-between items-center"
               >
                 <Text className="font-semibold text-dark text-lg">
-                  {section === "detail" ? "Product Detail" : section === "nutrition" ? "Nutritions" : "Review"}
+                  {section === "detail" ? "Product details" : section === "nutrition" ? "Nutrition" : "Reviews"}
                 </Text>
                 <View className="flex-row items-center gap-2">
                   {section === "nutrition" && (

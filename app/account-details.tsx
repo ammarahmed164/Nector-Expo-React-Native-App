@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, TextInput, Pressable } from "react-native";
+import { View, Text, TextInput, Pressable, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import Header from "@/components/Header";
 import Button from "@/components/Button";
@@ -7,7 +7,7 @@ import ProfileAvatar from "@/components/ProfileAvatar";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { useAuthStore } from "@/store/useAuthStore";
 import { pickProfileImage } from "@/lib/pickImage";
-import { setProfileAvatar, removeProfileAvatar } from "@/lib/profileAvatarStorage";
+import { removeProfileAvatar, saveStoredProfile, setProfileAvatar } from "@/lib/profileAvatarStorage";
 import { syncUserToBackend } from "@/lib/syncUser";
 
 export default function AccountDetails() {
@@ -18,43 +18,60 @@ export default function AccountDetails() {
   const [phone, setPhone] = useState(user?.phone ?? "");
   const [avatarUri, setAvatarUri] = useState(user?.avatarUri ?? "");
   const [showRemoveDialog, setShowRemoveDialog] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const changePhoto = async () => {
     const uri = await pickProfileImage();
     if (!uri || !user?.id) return;
-    setAvatarUri(uri);
-    await setProfileAvatar(user.id, uri);
-    updateUser({ avatarUri: uri });
+    try {
+      await setProfileAvatar(user.id, uri);
+      setAvatarUri(uri);
+      updateUser({ avatarUri: uri });
+    } catch {
+      Alert.alert("Photo not saved", "We could not save this photo. Please try another image.");
+    }
   };
 
   const save = async () => {
+    if (!user || saving) return;
     const patch = {
       name: name.trim(),
       email: email.trim().toLowerCase(),
       phone: phone.trim(),
-      avatarUri: avatarUri || undefined,
+      ...(avatarUri ? { avatarUri } : {}),
     };
-    if (user?.id) {
-      if (avatarUri) await setProfileAvatar(user.id, avatarUri);
-      else await removeProfileAvatar(user.id);
+
+    setSaving(true);
+    try {
+      const updatedUser = { ...user, ...patch };
+      await saveStoredProfile(updatedUser);
+      updateUser(patch);
+      await syncUserToBackend(updatedUser);
+      router.back();
+    } catch {
+      Alert.alert("Profile not saved", "Please try again. Your previous profile details are still safe.");
+    } finally {
+      setSaving(false);
     }
-    updateUser(patch);
-    if (user) await syncUserToBackend({ ...user, ...patch, avatarUri: avatarUri || undefined });
-    router.back();
   };
 
   const removePhoto = () => setShowRemoveDialog(true);
 
   const confirmRemovePhoto = async () => {
-    setAvatarUri("");
-    if (user?.id) await removeProfileAvatar(user.id);
-    updateUser({ avatarUri: undefined });
-    setShowRemoveDialog(false);
+    if (!user?.id) return;
+    try {
+      await removeProfileAvatar(user.id);
+      setAvatarUri("");
+      updateUser({ avatarUri: undefined });
+      setShowRemoveDialog(false);
+    } catch {
+      Alert.alert("Photo not removed", "Please try again.");
+    }
   };
 
   return (
-    <View className="flex-1 bg-white pt-14 px-5">
-      <Header title="Account & Settings" />
+    <View className="flex-1 bg-canvas pt-14 px-5">
+      <Header title="My details" subtitle="Keep your profile up to date" />
 
       <View className="items-center my-6">
         <ProfileAvatar uri={avatarUri || undefined} size={112} iconSize={56} />
@@ -68,28 +85,34 @@ export default function AccountDetails() {
         )}
       </View>
 
-      <Text className="text-muted mb-1">First Name</Text>
-      <TextInput value={name} onChangeText={setName} className="border-b border-line pb-2 mb-6 text-dark text-base" />
+      <Text className="text-dark font-medium mb-2 text-sm">Full name</Text>
+      <TextInput value={name} onChangeText={setName} className="bg-white border border-line rounded-2xl px-4 h-14 mb-5 text-dark text-base" />
 
-      <Text className="text-muted mb-1">Email</Text>
+      <Text className="text-dark font-medium mb-2 text-sm">Email address</Text>
       <TextInput
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
         keyboardType="email-address"
-        className="border-b border-line pb-2 mb-6 text-dark text-base"
+        className="bg-white border border-line rounded-2xl px-4 h-14 mb-5 text-dark text-base"
       />
 
-      <Text className="text-muted mb-1">Mobile Number</Text>
+      <Text className="text-dark font-medium mb-2 text-sm">Mobile number</Text>
       <TextInput
         value={phone}
         onChangeText={setPhone}
         keyboardType="phone-pad"
         placeholder="+92 3XX XXXXXXX"
-        className="border-b border-line pb-2 mb-8 text-dark text-base"
+        className="bg-white border border-line rounded-2xl px-4 h-14 mb-8 text-dark text-base"
       />
 
-      <Button title="Update" onPress={save} />
+      <Button
+        title="Save changes"
+        icon="checkmark-circle-outline"
+        loading={saving}
+        disabled={saving || !name.trim() || !email.trim()}
+        onPress={save}
+      />
 
       <ConfirmDialog
         visible={showRemoveDialog}

@@ -14,7 +14,7 @@ const PROMOS = [
     code: "FREEDEL",
     title: "Free Delivery",
     desc: "Free standard delivery on your first order. Min. order Rs. 1,500.",
-    expiry: "30 Jun 2026",
+    expiry: "31 Dec 2026",
   },
   {
     code: "FRESH500",
@@ -26,15 +26,15 @@ const PROMOS = [
 
 export default function PromoCard() {
   return (
-    <View className="flex-1 bg-white pt-14">
-      <Header title="Promo Card" />
+    <View className="flex-1 bg-canvas pt-14">
+      <Header title="Promo cards" subtitle="Offers picked for you" />
       <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
         <Text className="text-muted leading-6 mb-5">
           Apply these offers at checkout by selecting a promo option before placing your order.
         </Text>
 
         {PROMOS.map((promo) => (
-          <View key={promo.code} className="border border-line rounded-2xl p-4 mb-4">
+          <View key={promo.code} className="bg-white border border-line rounded-3xl p-4 mb-4">
             <View className="flex-row items-center justify-between mb-2">
               <Text className="text-primary font-bold text-lg">{promo.title}</Text>
               <View className="bg-primary/10 px-3 py-1 rounded-full">
@@ -49,7 +49,7 @@ export default function PromoCard() {
           </View>
         ))}
 
-        <View className="bg-bg rounded-2xl p-4 mt-2">
+        <View className="bg-primarySoft rounded-3xl p-4 mt-2">
           <Text className="text-dark font-semibold mb-1">How to redeem</Text>
           <Text className="text-muted leading-6 text-sm">
             1. Add items to cart{"\n"}

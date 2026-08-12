@@ -28,16 +28,16 @@ const METHODS = [
 
 export default function PaymentMethods() {
   return (
-    <View className="flex-1 bg-white pt-14">
-      <Header title="Payment Methods" />
+    <View className="flex-1 bg-canvas pt-14">
+      <Header title="Payment methods" subtitle="Secure and flexible" />
       <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
         <Text className="text-muted leading-6 mb-5">
           Choose your preferred payment method at checkout. All transactions are encrypted and secure.
         </Text>
 
         {METHODS.map((method) => (
-          <View key={method.title} className="flex-row border border-line rounded-2xl p-4 mb-3">
-            <View className="w-12 h-12 rounded-full bg-bg items-center justify-center mr-4">
+          <View key={method.title} className="flex-row bg-white border border-line rounded-3xl p-4 mb-3">
+            <View className="w-12 h-12 rounded-2xl bg-primarySoft items-center justify-center mr-4">
               <Ionicons name={method.icon} size={22} color={Colors.primary} />
             </View>
             <View className="flex-1">
@@ -47,7 +47,7 @@ export default function PaymentMethods() {
           </View>
         ))}
 
-        <View className="bg-primary/10 rounded-2xl p-4 mt-4">
+        <View className="bg-primarySoft border border-primary/10 rounded-3xl p-4 mt-4">
           <Text className="text-dark font-semibold mb-1">Payment security</Text>
           <Text className="text-muted leading-6 text-sm">
             Nectar never stores your full card number. For wallet payments, you complete authorization on the JazzCash

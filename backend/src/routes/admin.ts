@@ -11,6 +11,7 @@ import {
   upsertUser,
   verifyAdminToken,
 } from "../lib/adminStore";
+import { supabase } from "../lib/supabase";
 
 export const appRouter = Router();
 
@@ -21,11 +22,24 @@ const syncUserSchema = z.object({
   phone: z.string().optional(),
 });
 
-appRouter.post("/users/sync", (req, res) => {
+appRouter.post("/users/sync", async (req, res) => {
   const parsed = syncUserSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: "Invalid user data" });
   const user = upsertUser(parsed.data);
-  res.json({ user });
+
+  const profilePayload = {
+    id: parsed.data.id,
+    name: parsed.data.name,
+    email: parsed.data.email,
+    ...(parsed.data.phone !== undefined ? { phone: parsed.data.phone || null } : {}),
+  };
+  const { error } = await supabase.from("profiles").upsert(profilePayload, { onConflict: "id" });
+
+  if (error) {
+    console.warn("Could not sync user profile to Supabase:", error.message);
+  }
+
+  res.json({ user, profileSynced: !error });
 });
 
 const createOrderSchema = z.object({

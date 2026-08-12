@@ -10,16 +10,16 @@ type Props = {
 };
 
 export default function QuantitySelector({ qty, onIncrement, onDecrement, size = "sm" }: Props) {
-  const dim = size === "lg" ? "w-9 h-9" : "w-6 h-6";
+  const dim = size === "lg" ? "w-10 h-10" : "w-8 h-8";
   const iconSize = size === "lg" ? 18 : 14;
   return (
-    <View className="flex-row items-center gap-3">
-      <Pressable onPress={onDecrement} className={`${dim} rounded-full border border-line items-center justify-center`}>
-        <Ionicons name="remove" size={iconSize} color={Colors.dark} />
+    <View className="flex-row items-center gap-2">
+      <Pressable onPress={onDecrement} className={`${dim} rounded-xl bg-canvas border border-line items-center justify-center`}>
+        <Ionicons name="remove" size={iconSize} color={Colors.muted} />
       </Pressable>
-      <Text className="text-base font-medium w-4 text-center">{qty}</Text>
-      <Pressable onPress={onIncrement} className={`${dim} rounded-full bg-primary items-center justify-center`}>
-        <Ionicons name="add" size={iconSize} color="#fff" />
+      <Text className="text-base font-semibold min-w-7 text-center text-dark">{qty}</Text>
+      <Pressable onPress={onIncrement} className={`${dim} rounded-xl bg-primarySoft border border-primary/20 items-center justify-center`}>
+        <Ionicons name="add" size={iconSize} color={Colors.primary} />
       </Pressable>
     </View>
   );
